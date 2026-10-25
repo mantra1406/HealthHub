@@ -1,0 +1,200 @@
+<!-- Patient Detail View — For Doctor Portal -->
+<div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a class="navbar-brand" href="#/doctor/dashboard">
+            <div class="brand-icon"><img src="assets/logo-icon.svg" alt="HealthHub logo" /></div>
+            <div class="brand-name-wrap">
+                <span class="brand-text">HealthHub</span>
+                <span class="brand-tagline">Doctor Portal</span>
+            </div>
+        </a>
+        <div class="navbar-right">
+            
+            <div class="navbar-user">
+                <div class="avatar">{{user.letter}}</div>
+                <span style="display:flex;flex-direction:column;line-height:1.2;">
+                    <span style="font-weight:600;color:#FFFFFF;font-size:0.85rem;">{{user.name}}</span>
+                    <span class="role-badge doctor" style="margin-top:2px;">Doctor</span>
+                </span>
+            </div>
+            <button class="btn btn-ghost btn-sm" ng-click="goBack()">← Back</button>
+            <button class="btn btn-ghost btn-sm" ng-click="logout()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</button>
+        </div>
+    </nav>
+
+    <div class="main-content" style="max-width:960px;margin:0 auto;" ng-init="loadPatientDetail()">
+
+        <!-- Loading -->
+        <div class="loading-wrapper" ng-if="detailLoading">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Error state -->
+        <div class="empty-state" ng-if="!detailLoading && detailError" style="padding:3rem;">
+            <div class="empty-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <h3>Access Denied</h3>
+            <p>You can only view this patient's history if they have an active appointment with you.</p>
+        </div>
+
+        <!-- Content -->
+        <div ng-if="!detailLoading && patientDetail">
+
+            <!-- ===== PATIENT PROFILE HEADER ===== -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+                        <!-- Avatar -->
+                        <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--green));
+                             display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;">
+                            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        </div>
+                        <!-- Info -->
+                        <div style="flex:1;min-width:200px;">
+                            <h2 style="margin:0 0 4px;color:var(--text);font-size:1.5rem;">{{patientDetail.patient.name}}</h2>
+                            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+                                <span class="td-sub" ng-if="patientDetail.patient.age"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> {{patientDetail.patient.age}} yrs</span>
+                                <span class="td-sub" ng-if="patientDetail.patient.gender"> {{patientDetail.patient.gender}}</span>
+                                <span class="td-sub" ng-if="patientDetail.patient.phone"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> {{patientDetail.patient.phone}}</span>
+                            </div>
+                            <div class="td-sub" ng-if="patientDetail.patient.address"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> {{patientDetail.patient.address}}</div>
+                        </div>
+                        <!-- Quick stats -->
+                        <div style="display:flex;gap:2rem;text-align:center;flex-shrink:0;">
+                            <div>
+                                <div style="font-size:1.8rem;font-weight:800;color:var(--teal);">{{patientDetail.appointments.length}}</div>
+                                <div class="td-sub" style="font-size:0.75rem;">Total Visits</div>
+                            </div>
+                            <div>
+                                <div style="font-size:1.8rem;font-weight:800;color:var(--teal);">{{patientDetail.reports.length}}</div>
+                                <div class="td-sub" style="font-size:0.75rem;">Reports</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== VISIT TIMELINE ===== -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Visit Timeline</h3>
+                </div>
+                <div class="card-body" ng-if="patientDetail.appointments.length === 0">
+                    <div class="empty-state" style="padding:1rem;">
+                        <div class="empty-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                        <p>No visits recorded yet.</p>
+                    </div>
+                </div>
+                <div ng-if="patientDetail.appointments.length > 0" style="padding:0 1.5rem 1.5rem;">
+                    <div ng-repeat="a in patientDetail.appointments"
+                         style="display:flex;gap:1rem;position:relative;padding-bottom:1.5rem;">
+                        <!-- Timeline line -->
+                        <div ng-if="!$last" style="position:absolute;left:19px;top:40px;bottom:0;width:2px;background:var(--border);"></div>
+                        <!-- Timeline dot -->
+                        <div style="flex-shrink:0;width:40px;height:40px;border-radius:50%;border:3px solid;
+                             display:flex;align-items:center;justify-content:center;font-size:1rem;
+                             background:var(--surface);z-index:1;"
+                             ng-style="{
+                               'border-color': a.status==='Completed'?'var(--green)': a.status==='Cancelled'?'var(--danger)':'var(--teal)',
+                               'color': a.status==='Completed'?'var(--green)': a.status==='Cancelled'?'var(--danger)':'var(--teal)'
+                             }">
+                            <span ng-if="a.status==='Completed'"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+                            <span ng-if="a.status==='Cancelled'"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></span>
+                            <span ng-if="a.status==='Approved'"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></span>
+                            <span ng-if="a.status==='Pending'">⏳</span>
+                        </div>
+                        <!-- Content -->
+                        <div style="flex:1;background:var(--surface-2);border-radius:12px;padding:1rem 1.25rem;border:1px solid var(--border);">
+                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+                                <strong style="color:var(--text);">{{a.appointment_date | date:'mediumDate'}}</strong>
+                                <span class="badge" ng-class="'badge-'+a.status.toLowerCase()">{{a.status}}</span>
+                                <span class="td-sub" style="font-size:0.8rem;">with {{a.doctor_name}} · {{a.specialization}}</span>
+                            </div>
+                            <div ng-if="a.diagnosis" style="margin-bottom:4px;">
+                                <span class="td-sub">Diagnosis: </span>
+                                <span style="color:var(--text);font-size:0.9rem;">{{a.diagnosis}}</span>
+                            </div>
+                            <div ng-if="a.prescription" style="margin-bottom:4px;">
+                                <span class="td-sub">Prescription: </span>
+                                <span style="color:var(--text-muted);font-size:0.85rem;">{{a.prescription}}</span>
+                            </div>
+                            <div style="display:flex;gap:1rem;margin-top:6px;flex-wrap:wrap;">
+                                <span ng-if="a.payment_status" class="badge" ng-class="'badge-'+(a.payment_status||'unpaid').toLowerCase()" style="font-size:0.75rem;">{{a.payment_status}}</span>
+                            </div>
+                            <div ng-if="a.treatment_notes" style="margin-top:8px;padding:8px;background:var(--surface);border-radius:8px;border-left:3px solid var(--teal);">
+                                <div class="td-sub" style="font-size:0.72rem;font-weight:700;margin-bottom:2px;">NOTES</div>
+                                <div style="font-size:0.83rem;color:var(--text-muted);">{{a.treatment_notes}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== REPORTS ===== -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Medical Reports</h3>
+                    <span class="td-sub">{{patientDetail.reports.length}} total</span>
+                </div>
+                <div class="card-body" ng-if="patientDetail.reports.length === 0">
+                    <div class="empty-state" style="padding:1rem;">
+                        <div class="empty-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                        <p>No reports uploaded yet.</p>
+                    </div>
+                </div>
+                <div ng-if="patientDetail.reports.length > 0">
+                    <!-- Report Grid -->
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;padding:1.5rem;">
+                        <div ng-repeat="r in patientDetail.reports"
+                             style="border:1px solid var(--border);border-radius:12px;padding:1.1rem;background:var(--surface-2);">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                                <div style="font-size:1.5rem;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div>
+                                <div>
+                                    <div style="font-weight:700;color:var(--text);font-size:0.92rem;">{{r.report_type}}</div>
+                                    <div class="td-sub" style="font-size:0.75rem;">{{r.upload_date | date:'mediumDate'}}</div>
+                                </div>
+                            </div>
+                            <div class="td-sub" style="font-size:0.78rem;margin-bottom:10px;">By: {{r.doctor_name || 'Patient'}}</div>
+                            <button class="btn btn-teal btn-sm" ng-click="downloadReport(r.file_path)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> View</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== PREVIOUS REPORTS (SHARED ACCESS) ===== -->
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h3><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Previous Reports From Other Doctors</h3>
+                    <span class="td-sub" ng-if="accessStatus === 'approved'">{{sharedReports.length}} shared with you<span ng-if="accessExpires"> · valid until {{accessExpires | date:'dd MMM yyyy, h:mm a'}}</span></span>
+                </div>
+                <div class="card-body" ng-if="accessStatus !== 'approved'">
+                    <p class="td-sub" style="margin-bottom:12px;">Reports from this patient's visits to other doctors stay private unless the patient shares them. Send a request — the patient gets a notification and can approve or deny it there.</p>
+                    <button class="btn btn-teal btn-sm" ng-click="requestAccess()" ng-if="accessStatus !== 'pending'">Request Report Access</button>
+                    <span class="badge badge-pending" ng-if="accessStatus === 'pending'">Request pending — waiting for the patient</span>
+                    <span class="badge badge-cancelled" ng-if="accessStatus === 'denied'">Denied by the patient</span>
+                    <span class="badge badge-cancelled" ng-if="accessStatus === 'expired'">Access expired — request again</span>
+                </div>
+                <div ng-if="accessStatus === 'approved'">
+                    <div class="card-body" ng-if="sharedReports.length === 0">
+                        <div class="empty-state" style="padding:1rem;"><p>The patient approved your access, but has no previous reports yet.</p></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;padding:1.5rem;" ng-if="sharedReports.length > 0">
+                        <div ng-repeat="r in sharedReports"
+                             style="border:1px solid var(--border);border-radius:12px;padding:1.1rem;background:var(--surface-2);">
+                            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                                <div style="font-size:1.5rem;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                                <div>
+                                    <div style="font-weight:700;color:var(--text);font-size:0.92rem;">{{r.report_type}}</div>
+                                    <div class="td-sub" style="font-size:0.75rem;">{{r.upload_date | date:'mediumDate'}}</div>
+                                </div>
+                            </div>
+                            <div class="td-sub" style="font-size:0.78rem;margin-bottom:10px;">By: {{r.doctor_name || r.external_doctor_name || 'Patient'}}</div>
+                            <button class="btn btn-teal btn-sm" ng-click="downloadReport(r.file_path)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> View</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,129 @@
+<!-- Login View — Split Panel Layout -->
+<div class="auth-split">
+
+    <!-- LEFT PANEL -->
+    <div class="auth-panel-left">
+        <div class="auth-panel-inner">
+            <div class="auth-brand">
+                <div class="auth-brand-icon"><img src="assets/logo-icon.svg" alt="HealthHub logo" /></div>
+                <span class="auth-brand-name">Health<span>Hub</span></span>
+            </div>
+            <h1>Welcome Back!</h1>
+            <p>Sign in to your account to continue managing your health digitally.</p>
+
+            <ul class="auth-features">
+                <li><span class="feat-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span> Book doctor appointments instantly</li>
+                <li><span class="feat-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></span> Access medical records anytime</li>
+                <li><span class="feat-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span> Secure &amp; private data</li>
+                <li><span class="feat-icon"><svg class="ic" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7V2z"/></svg></span> Trusted by 500+ patients</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="auth-panel-right">
+        <a href="#/" class="auth-back-link">← Back to Home</a>
+
+        <div class="auth-form-card">
+            <!-- Logo -->
+            <div class="auth-form-logo">
+                <div class="auth-brand-icon sm"><img src="assets/logo-icon.svg" alt="HealthHub logo" /></div>
+                <span class="auth-brand-name dark">Health<span>Hub</span></span>
+            </div>
+
+            <h2>Sign In</h2>
+            <p class="auth-subtitle">Access your healthcare portal</p>
+
+            <!-- Role Tabs -->
+            <div class="auth-role-tabs">
+                <button class="art-tab" ng-class="{active: activeTab === 'patient'}" ng-click="setTab('patient')">
+                    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Patient
+                </button>
+                <button class="art-tab" ng-class="{active: activeTab === 'doctor'}" ng-click="setTab('doctor')">
+                    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Doctor
+                </button>
+                <button class="art-tab" ng-class="{active: activeTab === 'admin'}" ng-click="setTab('admin')">
+                    <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Admin
+                </button>
+            </div>
+
+            <!-- Error -->
+            <div class="auth-error" ng-if="error"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> {{error}}</div>
+
+            <!-- Patient form -->
+            <form ng-submit="login()" ng-if="activeTab === 'patient'">
+                <div class="auth-field">
+                    <label>Email Address</label>
+                    <div class="auth-input-wrap">
+                        <span class="auth-input-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+                        <input type="email" ng-model="loginData.email" placeholder="you@example.com" required />
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label>Password</label>
+                    <div class="auth-input-wrap">
+                        <span class="auth-input-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                        <input type="password" ng-model="loginData.password" placeholder="Enter your password" required />
+                    </div>
+                </div>
+                <button type="submit" class="auth-submit-btn" ng-disabled="loading">
+                    <span ng-if="!loading">Sign In as Patient →</span>
+                    <span ng-if="loading">Signing in...</span>
+                </button>
+
+                <!-- Social sign-in (patients only; Google is enabled in the Firebase console) -->
+                <div class="auth-forgot-row"><a href="" ng-click="forgot.open = !forgot.open">Forgot password?</a></div>
+                <div class="auth-divider"><span>or continue with</span></div>
+                <div class="auth-social-row">
+                    <button type="button" class="auth-social-btn" ng-click="socialLogin('google')" ng-disabled="loading">
+                        <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 8 3l5.7-5.7C34.3 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 8 3l5.7-5.7C34.3 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C36.9 39.2 44 32 44 24c0-1.3-.1-2.6-.4-3.9z"/></svg>
+                        Google
+                    </button>
+                    
+                </div>
+                <p class="auth-switch">New patient? <a href="#/register">Register here →</a></p>
+            </form>
+
+            <!-- Doctor / Admin form -->
+            <form ng-submit="login()" ng-if="activeTab !== 'patient'">
+                <div class="auth-field">
+                    <label>Username</label>
+                    <div class="auth-input-wrap">
+                        <span class="auth-input-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                        <input type="text" ng-model="loginData.username" placeholder="Enter your username" required />
+                    </div>
+                </div>
+                <div class="auth-field">
+                    <label>Password</label>
+                    <div class="auth-input-wrap">
+                        <span class="auth-input-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                        <input type="password" ng-model="loginData.password" placeholder="Enter your password" required />
+                    </div>
+                </div>
+                <button type="submit" class="auth-submit-btn" ng-disabled="loading">
+                    <span ng-if="!loading">Sign In as {{activeTab | uppercase}} →</span>
+                    <span ng-if="loading">Signing in...</span>
+                </button>
+                <div class="auth-forgot-row"><a href="" ng-click="forgot.open = !forgot.open">Forgot password?</a></div>
+                <p class="auth-hint" ng-if="activeTab === 'doctor'">Default: <strong>dr_arjun / Doctor123</strong></p>
+                <p class="auth-hint" ng-if="activeTab === 'admin'">Default: <strong>admin / Admin123</strong></p>
+            </form>
+            <!-- Forgot password panel (shared; wording follows the active tab) -->
+            <div class="auth-forgot-panel" ng-if="forgot.open">
+                <p class="auth-forgot-title">Reset your password</p>
+                <p class="auth-forgot-sub" ng-if="activeTab === 'patient'">Enter your account email and we will send you a password reset link.</p>
+                <p class="auth-forgot-sub" ng-if="activeTab !== 'patient'">Enter your username — the reset link goes to the email address on that account.</p>
+                <div class="auth-field">
+                    <div class="auth-input-wrap">
+                        <input type="text" ng-model="forgot.identifier" placeholder="{{activeTab === 'patient' ? 'you@example.com' : 'Your username'}}" />
+                    </div>
+                </div>
+                <button type="button" class="auth-submit-btn" ng-click="sendForgot()" ng-disabled="forgot.sending || !forgot.identifier">
+                    <span ng-if="!forgot.sending">Send Reset Link</span>
+                    <span ng-if="forgot.sending">Sending...</span>
+                </button>
+                <p class="auth-forgot-msg" ng-if="forgot.msg">{{forgot.msg}}</p>
+            </div>
+        </div>
+    </div>
+</div>

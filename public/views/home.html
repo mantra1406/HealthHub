@@ -1,0 +1,265 @@
+<!-- NAVBAR -->
+<header class="navbar navbar-landing">
+  <div class="navbar-left">
+    <a href="/#/" class="logo">
+      <img src="assets/logo-icon.svg" alt="HealthHub logo" width="36" height="36" style="border-radius:9px;display:block" />
+      <span class="logo-text">Health<span class="logo-accent">Hub</span></span>
+    </a>
+  </div>
+  <nav class="navbar-center">
+    <a href="" ng-click="scrollTo('home')" class="nav-link">Home</a>
+    <a href="" ng-click="scrollTo('about')" class="nav-link">About</a>
+    <a href="" ng-click="scrollTo('services')" class="nav-link">Services</a>
+    <a href="" ng-click="scrollTo('doctors')" class="nav-link">Doctors</a>
+    <a href="" ng-click="scrollTo('offers')" class="nav-link">Offers</a>
+    <a href="" ng-click="scrollTo('contact')" class="nav-link">Contact</a>
+  </nav>
+  <div class="navbar-right">
+    <!-- Show My Dashboard if already logged in -->
+    <a class="btn btn-teal btn-sm" ng-if="isLoggedIn" href="{{dashboardUrl()}}">My Dashboard →</a>
+    <a class="btn btn-ghost btn-sm" ng-if="isLoggedIn" href="" ng-click="logout()">Logout</a>
+    <!-- Show Login/Register if not logged in -->
+    
+    <a class="btn btn-ghost btn-sm" ng-if="!isLoggedIn" href="#/login">Login</a>
+    <a class="btn btn-teal btn-sm" ng-if="!isLoggedIn" href="#/register">Register</a>
+    <button class="hamburger" ng-click="mobileOpen = !mobileOpen">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" ng-class="{open: mobileOpen}">
+    <a href="" ng-click="scrollTo('home'); mobileOpen=false">Home</a>
+    <a href="" ng-click="scrollTo('about'); mobileOpen=false">About</a>
+    <a href="" ng-click="scrollTo('services'); mobileOpen=false">Services</a>
+    <a href="" ng-click="scrollTo('doctors'); mobileOpen=false">Doctors</a>
+    <a href="" ng-click="scrollTo('offers'); mobileOpen=false">Offers</a>
+    <a href="" ng-click="scrollTo('contact'); mobileOpen=false">Contact</a>
+    <a class="btn btn-ghost btn-sm" href="#/login">Login</a>
+    <a class="btn btn-teal btn-sm" href="#/register">Register</a>
+  </div>
+</header>
+<main class="landing-main">
+
+  <!-- HERO -->
+  <section id="home" class="hero-section">
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="hero-pill">
+          <span><svg class="ic" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7V2z"/></svg> Trusted Healthcare Platform</span>
+        </div>
+        <h1>Welcome to<br /><span>HealthHub</span></h1>
+        <p class="hero-subtitle">
+          Your trusted digital healthcare partner for appointments, records, and specialist care.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-teal btn-lg" href="{{isLoggedIn ? dashboardUrl() : '#/register'}}">{{isLoggedIn ? 'My
+            Dashboard →' : 'Get Started Free →'}}</a>
+          <a class="btn btn-ghost btn-lg" href="" ng-click="scrollTo('about')">Learn More ↓</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="stats-card">
+          <div class="stat-item">
+            <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Patients</span>
+            <span class="stat-value">500+</span>
+          </div>
+          <div class="stat-item">
+            <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Doctors</span>
+            <span class="stat-value">6</span>
+          </div>
+          <div class="stat-item">
+            <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Appointments</span>
+            <span class="stat-value">1000+</span>
+          </div>
+          <div class="stat-item">
+            <span>⭐ Rating</span>
+            <span class="stat-value">4.9</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFERS SLIDER -->
+  <section id="offers" class="offers-section">
+    <div class="section-header">
+      <h2>Exclusive HealthHub Offers</h2>
+      <p>Save more while taking care of your health.</p>
+    </div>
+    <div class="slider-wrapper" ng-controller="SliderController">
+      <div class="slide" ng-repeat="s in slides" ng-show="activeIndex === $index" ng-style="{'background': s.gradient}"
+        style="display:flex;">
+        <h3>{{s.title}}</h3>
+        <h4>{{s.subtitle}}</h4>
+        <p>{{s.text}}</p>
+        <a class="btn btn-teal btn-sm" href="#/login">{{s.cta}}</a>
+      </div>
+      <button class="offer-nav prev" ng-click="prev()"><span>‹</span></button>
+      <button class="offer-nav next" ng-click="next()"><span>›</span></button>
+      <div class="offer-dots">
+        <span class="offer-dot" ng-repeat="s in slides" ng-class="{active: activeIndex === $index}"
+          ng-click="go($index)"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="about-section">
+    <div class="about-inner">
+      <div class="about-image">
+        <div class="about-illustration"></div>
+      </div>
+      <div class="about-text">
+        <h2>About HealthHub</h2>
+        <p>
+          HealthHub is a modern digital healthcare platform designed to bridge the gap between patients and doctors.
+          We believe healthcare should be simple, accessible, and paperless.
+        </p>
+        <p>
+          Our platform allows patients to book appointments, access medical records, view prescriptions, and manage
+          their entire health journey — all from one place.
+        </p>
+        <ul class="about-list">
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Trusted by 500+ patients</li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> 6 specialist doctors onboard</li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Secure &amp; private health records</li>
+          <li><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Available 24/7 online</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="services-section">
+    <div class="section-header">
+      <h2>Our Services</h2>
+      <p>Everything you need for a complete digital healthcare experience.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <h3>Online Appointment Booking</h3>
+        <p>Quickly find and book appointments with trusted specialists.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div>
+        <h3>Digital Prescriptions</h3>
+        <p>Access your prescriptions anytime without worrying about lost papers.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+        <h3>Medical Report Storage</h3>
+        <p>Store and download all your lab reports and scans securely.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <h3>Online Bill Management</h3>
+        <p>Track treatment costs and payments from your dashboard.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Secure Patient Records</h3>
+        <p>Your health data is kept private with strict access control.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Expert Specialist Doctors</h3>
+        <p>Connect with experienced doctors across multiple specialties.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCTORS -->
+  <section id="doctors" class="doctors-section">
+    <div class="section-header">
+      <h2>Meet Our Doctors</h2>
+      <p>Experienced specialists ready to care for you.</p>
+    </div>
+    <div class="doctors-grid">
+      <div class="doctor-card cardiology">
+        <div class="doctor-avatar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Dr. Arjun Mehta</h3>
+        <span class="spec-badge spec-cardio">Cardiologist</span>
+        <p class="doc-location">HealthHub Heart Center, Mumbai</p>
+        <a class="btn btn-teal btn-sm" href="{{isLoggedIn ? '#/patient/dashboard' : '#/register'}}">Book Appointment
+          →</a>
+      </div>
+      <div class="doctor-card derm">
+        <div class="doctor-avatar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Dr. Priya Sharma</h3>
+        <span class="spec-badge spec-derm">Dermatologist</span>
+        <p class="doc-location">HealthHub Skin Clinic, Delhi</p>
+        <a class="btn btn-teal btn-sm" href="{{isLoggedIn ? '#/patient/dashboard' : '#/register'}}">Book Appointment
+          →</a>
+      </div>
+      <div class="doctor-card ortho">
+        <div class="doctor-avatar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 10c.7-.7 1.69 0 2.5 0a2.5 2.5 0 1 0 0-5 .5.5 0 0 1-.5-.5 2.5 2.5 0 1 0-5 0c0 .81.7 1.8 0 2.5l-7 7c-.7.7-1.69 0-2.5 0a2.5 2.5 0 0 0 0 5c.28 0 .5.22.5.5a2.5 2.5 0 1 0 5 0c0-.81-.7-1.8 0-2.5Z"/></svg></div>
+        <h3>Dr. Rohan Verma</h3>
+        <span class="spec-badge spec-ortho">Orthopedic</span>
+        <p class="doc-location">HealthHub Bone &amp; Joint, Pune</p>
+        <a class="btn btn-teal btn-sm" href="{{isLoggedIn ? '#/patient/dashboard' : '#/register'}}">Book Appointment
+          →</a>
+      </div>
+      <div class="doctor-card dentist">
+        <div class="doctor-avatar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div>
+        <h3>Dr. Sneha Kapoor</h3>
+        <span class="spec-badge spec-dent">Dentist</span>
+        <p class="doc-location">HealthHub Dental Care, Bangalore</p>
+        <a class="btn btn-teal btn-sm" href="{{isLoggedIn ? '#/patient/dashboard' : '#/register'}}">Book Appointment
+          →</a>
+      </div>
+      <div class="doctor-card neuro">
+        <div class="doctor-avatar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h3>Dr. Imran Khan</h3>
+        <span class="spec-badge spec-neuro">Neurologist</span>
+        <p class="doc-location">HealthHub Brain Clinic, Hyderabad</p>
+        <a class="btn btn-teal btn-sm" href="{{isLoggedIn ? '#/patient/dashboard' : '#/register'}}">Book Appointment
+          →</a>
+      </div>
+      <div class="doctor-card pedia">
+        <div class="doctor-avatar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Dr. Kavya Nair</h3>
+        <span class="spec-badge spec-pedia">Pediatrician</span>
+        <p class="doc-location">HealthHub Child Care, Chennai</p>
+        <a class="btn btn-teal btn-sm" href="{{isLoggedIn ? '#/patient/dashboard' : '#/register'}}">Book Appointment
+          →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT / FOOTER -->
+  <section id="contact" class="contact-section">
+    <div class="contact-strip">
+      <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> NMIMS Indore, Madhya Pradesh, India</span>
+      <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> +91 97559 33711 </span>
+      <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> mantrarajshrivastava@gmail.com</span>
+    </div>
+    <footer class="footer">
+      <div class="footer-col">
+        <h3>HealthHub <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></h3>
+        <p>Your trusted digital healthcare partner.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="" ng-click="scrollTo('home')">Home</a>
+        <a href="" ng-click="scrollTo('about')">About</a>
+        <a href="" ng-click="scrollTo('services')">Services</a>
+        <a href="" ng-click="scrollTo('doctors')">Doctors</a>
+        <a href="" ng-click="scrollTo('offers')">Offers</a>
+        <a href="" ng-click="scrollTo('contact')">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Specializations</h4>
+        <span>Cardiology</span>
+        <span>Dermatology</span>
+        <span>Orthopedic</span>
+        <span>Dentistry</span>
+        <span>Neurology</span>
+        <span>Pediatrics</span>
+      </div>
+    </footer>
+    <div class="footer-bottom">
+      <span>© 2025 HealthHub. All rights reserved.</span>
+      <span>Built with <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> for better healthcare.</span>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,1 @@
+{"dependencies":{"firebase-admin":"^12.7.0"},"name":"healthhub-firebase-seed","private":true,"scripts":{"seed":"node seed.js"},"version":"1.0.0"}

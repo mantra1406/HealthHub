@@ -1,0 +1,196 @@
+rules_version = '2';
+
+// HealthHub Firestore security rules.
+//
+// Roles live in accounts/{uid}.role ('admin' | 'doctor' | 'patient').
+// Design notes (the client IS the backend in a full-Firebase app, so these
+// rules are the enforcement layer — the app code checks everything too):
+//  - Patients/doctors can only ever see their OWN appointments: appointment
+//    reads are conditioned on patient_id / doctor_id matching the caller,
+//    and every list query in the app filters on exactly those fields.
+//  - Slot availability is NOT read from appointments (a patient may not read
+//    other patients' appointments). It lives in slotLocks/{doctor_date_time},
+//    readable by any signed-in user, written in the same transaction as the
+//    appointment itself.
+//  - Reports carry a denormalized doctor_id (the appointment's doctor) so a
+//    doctor's report queries stay provably within the rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function myRole() {
+      return get(/databases/$(database)/documents/accounts/$(request.auth.uid)).data.role;
+    }
+    function isAdmin()   { return signedIn() && myRole() == 'admin'; }
+    function isDoctor()  { return signedIn() && myRole() == 'doctor'; }
+    function isPatient() { return signedIn() && myRole() == 'patient'; }
+    function apptDoctor(apptId) {
+      return get(/databases/$(database)/documents/appointments/$(apptId)).data.doctor_id;
+    }
+    function apptPatient(apptId) {
+      return get(/databases/$(database)/documents/appointments/$(apptId)).data.patient_id;
+    }
+
+    // username -> { email, role, uid } lookup so admin/doctors can log in
+    // with a username (Firebase Auth itself is email-based). Contains no
+    // secrets — the same emails are visible in the doctor directory.
+    match /usernames/{username} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if isAdmin() || (signedIn() && request.resource.data.uid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // Role + identity per Auth user.
+    match /accounts/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      // A user may touch their own doc but never change their own role.
+      allow update: if isAdmin() || (signedIn() && request.auth.uid == uid
+                                    && request.resource.data.role == resource.data.role);
+      allow delete: if isAdmin();
+    }
+
+    // Doctor directory: any signed-in user can browse (patients need it to
+    // book). Only admins create/edit/ban/delete doctor profiles.
+    match /doctors/{uid} {
+      allow read: if signedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Patient profiles: strictly own-or-admin. Doctors never read this
+    // collection — everything a doctor needs is snapshotted onto the
+    // appointment document (name, age, gender, phone, address).
+    match /patients/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow update: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    match /appointments/{apptId} {
+      allow read: if signedIn() && (resource.data.patient_id == request.auth.uid
+                                    || resource.data.doctor_id == request.auth.uid
+                                    || isAdmin());
+      // Patients book only for themselves, always starting as Pending.
+      allow create: if isPatient()
+                    && request.resource.data.patient_id == request.auth.uid
+                    && request.resource.data.status == 'Pending';
+      // Doctors may change ONLY status and treatment of their own
+      // appointments (covers complete/cancel + treatment create/update).
+      allow update: if isAdmin()
+                    || (isDoctor() && resource.data.doctor_id == request.auth.uid
+                        && request.resource.data.diff(resource.data)
+                             .affectedKeys().hasOnly(['status', 'treatment']));
+      allow delete: if isAdmin();
+    }
+
+    // One doc per occupied slot: {doctorId}_{date}_{time}.
+    // Created/deleted inside the same transaction as the appointment
+    // create / cancel / delete, so a slot can never be double-booked.
+    match /slotLocks/{lockId} {
+      allow read: if signedIn();
+      allow create: if isPatient() && request.resource.data.patient_id == request.auth.uid;
+      allow update: if false;
+      allow delete: if signedIn() && (resource.data.patient_id == request.auth.uid
+                                      || resource.data.doctor_id == request.auth.uid
+                                      || isAdmin());
+    }
+
+    match /reports/{reportId} {
+      // Reports are medical documents: only the owning patient and the
+      // appointment's doctor may read them. Admins manage accounts, not
+      // medical files (admin access removed at the owner's request).
+      allow read: if signedIn() && (resource.data.patient_id == request.auth.uid
+                                    || resource.data.doctor_id == request.auth.uid
+                                    || (isDoctor() && 'shared_doctor_ids' in resource.data
+                                        && resource.data.shared_doctor_ids.hasAny([request.auth.uid])));
+      // Patient: own report; if linked, the appointment must be theirs.
+      // Doctor: the appointment must be theirs and the patient must match it.
+      allow create: if signedIn() && (
+                      (isPatient() && request.resource.data.patient_id == request.auth.uid
+                        && (request.resource.data.appointment_id == null
+                            || apptPatient(request.resource.data.appointment_id) == request.auth.uid))
+                      ||
+                      (isDoctor() && request.resource.data.appointment_id != null
+                        && request.resource.data.doctor_id == request.auth.uid
+                        && apptDoctor(request.resource.data.appointment_id) == request.auth.uid
+                        && apptPatient(request.resource.data.appointment_id) == request.resource.data.patient_id)
+                    );
+      // Reports are locked once submitted — the one exception: the
+      // owning patient may edit ONLY shared_doctor_ids, which is how an
+      // approved access request shares previous reports with a doctor.
+      allow update: if isPatient() && resource.data.patient_id == request.auth.uid
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['shared_doctor_ids']);
+      allow delete: if isAdmin();
+    }
+
+    // Uploaded files (reports + ID documents) stored base64 in Firestore —
+    // Firebase Storage requires the Blaze plan on new projects, this one is
+    // on Spark. Access mirrors the report/ID ownership model:
+    //   report      -> owning patient, any doctor (clinical staff), admin
+    //   id_document -> owning patient and admin ONLY (never doctors)
+    match /files/{fileId} {
+      allow get: if (signedIn() && resource.data.patient_id == request.auth.uid)
+                 || (isDoctor() && resource.data.kind == 'report')
+                 || (isAdmin() && resource.data.kind == 'id_document');
+      allow list: if false;
+      // Patients upload their own files; doctors upload reports for a
+      // patient. 716800 = 700 KB — with base64 inflation the document
+      // stays safely under Firestore's 1 MiB limit.
+      allow create: if signedIn() && request.resource.data.size <= 716800
+                    && ((isPatient() && request.resource.data.patient_id == request.auth.uid)
+                        || (isDoctor() && request.resource.data.kind == 'report'));
+      allow update: if false;
+      allow delete: if isAdmin() || (signedIn() && resource.data.patient_id == request.auth.uid);
+    }
+
+    // {doctorId}_{off_date} — deterministic id prevents duplicates.
+    match /doctorOffDays/{docId} {
+      allow read: if signedIn();
+      allow create: if isDoctor() && request.resource.data.doctor_id == request.auth.uid;
+      allow delete: if signedIn() && (resource.data.doctor_id == request.auth.uid || isAdmin());
+      allow update: if false;
+    }
+
+    // Report-access requests: a doctor asks a patient for permission to
+    // see the patient's previous reports (from other doctors). The
+    // patient approves/denies from their notifications; approval adds
+    // the doctor to each report's shared_doctor_ids (see reports rules).
+    match /reportAccessRequests/{reqId} {
+      allow get, list: if signedIn() && (resource.data.doctor_id == request.auth.uid
+                                        || resource.data.patient_id == request.auth.uid);
+      allow create: if isDoctor() && request.resource.data.doctor_id == request.auth.uid
+                    && request.resource.data.status == 'pending';
+      allow update: if (signedIn() && resource.data.patient_id == request.auth.uid
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'decided_at', 'approved_at', 'expires_at'])
+                        && request.resource.data.status in ['approved', 'denied', 'expired'])
+                    || (isDoctor() && resource.data.doctor_id == request.auth.uid
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'created_at', 'decided_at'])
+                        && request.resource.data.status == 'pending');
+      allow delete: if signedIn() && (resource.data.doctor_id == request.auth.uid
+                                      || resource.data.patient_id == request.auth.uid);
+    }
+
+    // In-app notifications: a user reads/updates only their own; any
+    // signed-in user may create one FOR someone (booking -> doctor,
+    // status change -> patient, report upload -> the other party).
+    match /notifications/{notifId} {
+      allow get, list: if signedIn() && resource.data.user_id == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.user_id is string
+                    && request.resource.data.title is string;
+      allow update: if signedIn() && resource.data.user_id == request.auth.uid
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['is_read', 'action_done']);
+      allow delete: if signedIn() && resource.data.user_id == request.auth.uid;
+    }
+
+    // Seed bookkeeping + anything else: locked down.
+    match /_meta/{docId} {
+      allow read, write: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

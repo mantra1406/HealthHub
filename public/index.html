@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="healthhubApp">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HealthHub — Digital Healthcare Platform</title>
+  <meta name="description"
+    content="HealthHub is a modern, secure healthcare platform for patients, doctors, and administrators." />
+
+  <!-- Fonts & Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+
+<body>
+
+  <!-- Main SPA View -->
+  <div ng-view></div>
+
+  <!-- AngularJS CDN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.min.js"></script>
+  <!-- Firebase compat SDK (global `firebase` namespace — fits AngularJS) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Your project's Firebase config — fill this file in (see README) -->
+  <script src="js/firebase-config.js"></script>
+  <!-- Toast helper -->
+  <script src="js/services/toast.service.js"></script>
+  <!-- Angular app + services/controllers -->
+  <script src="js/app.js"></script>
+  <script src="js/services/auth.service.js"></script>
+  <script src="js/services/api.service.js"></script>
+  <script src="js/controllers/auth.controller.js"></script>
+  <script src="js/controllers/admin.controller.js"></script>
+  <script src="js/controllers/doctor.controller.js"></script>
+  <script src="js/controllers/patient.controller.js"></script>
+  <!-- (js/main.js was referenced here but never existed in the project — removed, it 404'd on every page load) -->
+</body>
+
+</html>

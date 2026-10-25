@@ -1,0 +1,798 @@
+<!-- Patient Dashboard -->
+<div>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a class="navbar-brand" href="#/patient/dashboard" style="text-decoration:none;display:flex;align-items:center;gap:12px;">
+            <div class="brand-icon"><img src="assets/logo-icon.svg" alt="HealthHub logo" /></div>
+            <div class="brand-name-wrap">
+                <span class="brand-text">HealthHub</span>
+                <span class="brand-tagline">Patient Portal</span>
+            </div>
+        </a>
+        <div class="navbar-right">
+            
+            <div class="navbar-user">
+                <div class="avatar">{{user.letter}}</div>
+                <span style="display:flex;flex-direction:column;line-height:1.2;">
+                    <span style="font-weight:600;color:#FFFFFF;font-size:0.85rem;">{{user.name}}</span>
+                    <span class="role-badge patient" style="margin-top:2px;">Patient</span>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <span class="sidebar-label">Portal</span>
+            <a href="" ng-click="navigate('dashboard')" ng-class="{active: activeSection==='dashboard'}">
+                <span class="sidebar-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>Dashboard</span>
+            </a>
+            <a href="" ng-click="navigate('book')" ng-class="{active: activeSection==='book'}">
+                <span class="sidebar-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span>Book Appt</span>
+            </a>
+            <a href="" ng-click="navigate('history')" ng-class="{active: activeSection==='history'}">
+                <span class="sidebar-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></span><span>History</span>
+            </a>
+            <a href="" ng-click="navigate('reports')" ng-class="{active: activeSection==='reports'}">
+                <span class="sidebar-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span>Reports</span>
+            </a>
+            <span class="sidebar-label">Me</span>
+            <a href="" ng-click="navigate('profile')" ng-class="{active: activeSection==='profile'}">
+                <span class="sidebar-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>Profile</span>
+            </a>
+                <a href="" ng-click="navigate('notifications')" ng-class="{active: activeSection==='notifications'}">
+                    <span class="sidebar-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span><span>Notifications</span><span class="notif-badge" ng-if="notifUnread > 0">{{notifUnread}}</span>
+                </a>
+            <span class="sidebar-label">Account</span>
+            <button ng-click="logout()">
+                <span class="sidebar-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span><span>Logout</span>
+            </button>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- ==================== DASHBOARD ==================== -->
+            <div ng-if="activeSection === 'dashboard'">
+                <div class="page-header">
+                    <h1>Welcome back, {{user.name}} </h1>
+                    <p>Your health management dashboard</p>
+                </div>
+
+                <!-- Profile Completion Banner -->
+                <div class="profile-banner" ng-if="!profile.profile_complete">
+                    <div class="banner-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+                    <div class="banner-text">
+                        <h3>Your profile is incomplete!</h3>
+                        <p>Complete your details to book appointments and access all features.</p>
+                        <div class="progress-bar-wrap">
+                            <div class="progress-bar-track">
+                                <div class="progress-bar-fill" ng-style="{'width': profileProgress + '%'}"></div>
+                            </div>
+                            <div class="progress-label">
+                                <span>Profile Completion</span>
+                                <span>{{profileProgress}}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="banner-actions">
+                        <button class="btn btn-teal" ng-click="navigate('profile')">Complete Profile →</button>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card teal">
+                        <div class="stat-icon teal"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                        <div class="stat-info">
+                            <div class="label">Total Appointments</div>
+                            <div class="value">{{appointments.length}}</div>
+                        </div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon green"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                        <div class="stat-info">
+                            <div class="label">Completed</div>
+                            <div class="value">{{countByStatus('Completed')}}</div>
+                        </div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon orange">⏳</div>
+                        <div class="stat-info">
+                            <div class="label">Pending</div>
+                            <div class="value">{{countByStatus('Pending')}}</div>
+                        </div>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-icon blue"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                        <div class="stat-info">
+                            <div class="label">Reports</div>
+                            <div class="value">{{reports.length}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Appointments -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Recent Appointments</h3>
+                        <button class="btn btn-teal btn-sm" ng-click="navigate('book')">+ Book New</button>
+                    </div>
+                    <div class="card-body" ng-if="loading">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="empty-state" ng-if="!loading && appointments.length === 0">
+                        <div class="empty-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+                        <h3>No appointments yet</h3>
+                        <p>Book your first appointment to get started</p>
+                        <button class="btn btn-teal mt-2" ng-click="navigate('book')">Book Appointment</button>
+                    </div>
+                    <div class="appt-grid" style="padding:1.25rem;" ng-if="!loading && appointments.length > 0">
+                        <div class="appt-card" ng-class="getStatusClass(a.status)"
+                            ng-repeat="a in appointments | apptSort:apptSortMode:'doctor_name' | limitTo:4">
+                            <div class="appt-card-header">
+                                <div>
+                                    <h4>{{a.doctor_name}}</h4>
+                                    <div class="appt-info"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> {{a.specialization}}</div>
+                                    <div class="appt-info"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> {{a.appointment_date | date:'mediumDate'}}</div>
+                                </div>
+                                <span class="badge" ng-class="'badge-'+a.status.toLowerCase()">{{a.status}}</span>
+                            </div>
+                            <div ng-if="a.diagnosis"
+                                style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;">
+                                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-7 7a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg> {{a.diagnosis}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== BOOK APPOINTMENT ==================== -->
+            <div ng-if="activeSection === 'book'">
+                <div class="page-header">
+                    <h1><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Book Appointment</h1>
+                    <p>Browse doctors, pick a specialist, and choose your date</p>
+                </div>
+
+                <div class="book-layout">
+                    <!-- LEFT: Doctor Browser -->
+                    <div class="book-left">
+                        <!-- Search + Filter -->
+                        <div class="book-search-bar">
+                            <div class="search-bar" style="flex:1;">
+                                <span class="search-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+                                <input ng-model="docSearch.text" placeholder="Search doctor by name..." />
+                            </div>
+                        </div>
+
+                        <div class="filter-pills" style="margin-bottom:1.25rem;">
+                            <button class="filter-pill" ng-class="{active: selectedSpec === s}"
+                                ng-repeat="s in specializations"
+                                ng-click="filterBySpec(s)">{{s}}</button>
+                        </div>
+
+                        <!-- Doctor List -->
+                        <div class="book-doctor-list">
+                            <div class="book-doctor-card"
+                                ng-repeat="doc in doctors | filter:doctorFilter"
+                                ng-class="{selected: selectedDoctor && selectedDoctor.doctor_id === doc.doctor_id}"
+                                ng-click="selectDoctor(doc)">
+                                <div class="bdc-avatar">
+                                    <span>{{doc.name.charAt(0)}}</span>
+                                </div>
+                                <div class="bdc-info">
+                                    <div class="bdc-name">{{doc.name}}</div>
+                                    <span class="bdc-spec">{{doc.specialization}}</span>
+                                    <div class="bdc-meta" ng-if="doc.location_name">
+                                        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> {{doc.location_name}}
+                                    </div>
+                                    <div class="bdc-meta" ng-if="doc.experience_years">
+                                        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> {{doc.experience_years}} yrs experience
+                                    </div>
+                                </div>
+                                <div class="bdc-action">
+                                    <button class="btn btn-teal btn-sm"
+                                        ng-class="{selected: selectedDoctor && selectedDoctor.doctor_id === doc.doctor_id}">
+                                        <span ng-if="selectedDoctor && selectedDoctor.doctor_id === doc.doctor_id"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></span> {{ selectedDoctor && selectedDoctor.doctor_id === doc.doctor_id ? 'Selected' : 'Select' }}
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="empty-state" ng-if="!loading && doctors.length === 0">
+                                <div class="empty-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                                <h3>No doctors found</h3>
+                                <p>Try a different specialization</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: Booking Panel -->
+                    <div class="book-right">
+                        <!-- Placeholder when no doctor selected -->
+                        <div class="book-panel-empty" ng-if="!selectedDoctor">
+                            <div style="font-size:3rem; margin-bottom:1rem;"></div>
+                            <h3>Select a Doctor</h3>
+                            <p>Choose a doctor from the list to book your appointment</p>
+                        </div>
+
+                        <!-- Booking form when doctor selected -->
+                        <div class="book-panel" ng-if="selectedDoctor">
+                            <div class="book-panel-header">
+                                <div class="bp-avatar">{{selectedDoctor.name.charAt(0)}}</div>
+                                <div class="bp-info">
+                                    <div class="bp-name">{{selectedDoctor.name}}</div>
+                                    <span class="bdc-spec">{{selectedDoctor.specialization}}</span>
+                                </div>
+                                <button class="btn btn-ghost btn-sm" ng-click="selectedDoctor=null"
+                                    style="margin-left:auto;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                            </div>
+
+                            <div ng-if="selectedDoctor.location_name" class="bp-detail">
+                                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> {{selectedDoctor.location_name}}
+                                <span ng-if="selectedDoctor.location_address"> — {{selectedDoctor.location_address}}</span>
+                            </div>
+                            <div ng-if="selectedDoctor.phone" class="bp-detail"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> {{selectedDoctor.phone}}</div>
+                            <div ng-if="selectedDoctor.experience_years" class="bp-detail">
+                                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> {{selectedDoctor.experience_years}} years of experience
+                            </div>
+
+                            <hr style="border-color:var(--border);margin:1rem 0;" />
+
+                            <!-- ===== CALENDAR STRIP ===== -->
+                            <div class="cal-strip">
+                                <div class="cal-header">
+                                    <div class="cal-header-label">{{getCalHeaderLabel()}}</div>
+                                    <div class="cal-nav-btns">
+                                        <button class="cal-nav-btn" ng-click="prevWeek()"
+                                            ng-disabled="calendarOffset <= 0">&lt;</button>
+                                        <button class="cal-nav-btn" ng-click="nextWeek()"
+                                            ng-disabled="calendarOffset >= 1">&gt;</button>
+                                    </div>
+                                </div>
+                                <div class="cal-days">
+                                    <div class="cal-day"
+                                        ng-repeat="d in calendarDays"
+                                        ng-class="{
+                                            'cal-today':      d.isToday && !(selectedDay && selectedDay.date===d.date),
+                                            'cal-selected':   selectedDay && selectedDay.date===d.date,
+                                            'cal-off':        d.isWed || d.isBeyond,
+                                            'cal-doctor-off': !d.isWed && !d.isBeyond && d.offByDoctor,
+                                            'cal-available':  !d.isWed && !d.isBeyond && !d.offByDoctor
+                                        }"
+                                        ng-click="selectDay(d)">
+                                        <div class="cal-day-name">{{d.dayName}}</div>
+                                        <div class="cal-day-num">{{d.dayNum}}</div>
+                                        <div class="cal-off-tag" ng-if="d.isWed">OFF</div>
+                                        <div class="cal-off-tag" ng-if="!d.isWed && d.offByDoctor">LEAVE</div>
+                                        <div class="cal-off-tag" ng-if="d.isBeyond && !d.isWed">—</div>
+                                    </div>
+                                </div>
+                                <div style="font-size:0.7rem;color:var(--text-muted);padding:2px 0 6px;display:flex;gap:14px;flex-wrap:wrap;">
+                                    <span><span class="dot dot-blue"></span> Today</span>
+                                    <span style="color:var(--danger);">⬜ Wed = Holiday</span>
+                                    <span style="color:var(--danger);">⬜ LEAVE = Doctor off</span>
+                                </div>
+                            </div>
+
+                            <!-- ===== SLOT GRID ===== -->
+                            <div ng-if="selectedDay">
+                                <!-- Loading -->
+                                <div class="spinner" ng-if="slotsLoading" style="margin:1rem auto;"></div>
+
+                                <!-- Off day: show notice inside the slot area too -->
+                                <div ng-if="!slotsLoading && slotOffDay"
+                                    style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius);padding:1rem;text-align:center;margin-bottom:1rem;">
+                                    <div style="font-size:1.4rem;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div>
+                                    <div style="font-weight:700;color:var(--danger);margin-top:4px;font-size:0.92rem;">
+                                        <span ng-if="slotOffDayReason==='wednesday'">Wednesday is a universal holiday</span>
+                                        <span ng-if="slotOffDayReason==='doctor_leave'">Doctor is on leave this day</span>
+                                        <span ng-if="slotOffDayReason==='doctor_unavailable'">This doctor is not available for booking</span>
+                                        <span ng-if="!slotOffDayReason">Doctor is not available this day</span>
+                                    </div>
+                                    <div style="font-size:0.8rem;color:var(--text-muted);margin-top:4px;">Select another date above.</div>
+                                </div>
+
+                                <!-- Slots available -->
+                                <div ng-if="!slotsLoading && !slotOffDay && slots.length > 0">
+                                    <!-- Selected date label -->
+                                    <div style="font-size:0.78rem;font-weight:700;color:var(--teal);margin-bottom:0.75rem;letter-spacing:0.3px;">
+                                        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> {{selectedDay.dayName}}, {{selectedDay.dayNum}} {{selectedDay.month}}
+                                    </div>
+
+                                    <!-- Morning -->
+                                    <div style="margin-bottom:0.85rem;">
+                                        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted);margin-bottom:6px;">
+                                            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> Morning &nbsp;<span style="font-weight:400;">(10:00 AM – 1:00 PM)</span>
+                                        </div>
+                                        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                                            <button ng-repeat="s in morningSlots"
+                                                class="slot-btn"
+                                                ng-class="{'slot-selected': bookForm.appointment_time===s.time, 'slot-taken': !s.available}"
+                                                ng-disabled="!s.available"
+                                                ng-click="selectSlot(s)">
+                                                {{formatSlotLabel(s.time)}}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Evening -->
+                                    <div style="margin-bottom:0.85rem;">
+                                        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-muted);margin-bottom:6px;">
+                                            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> Evening &nbsp;<span style="font-weight:400;">(6:00 PM – 10:00 PM)</span>
+                                        </div>
+                                        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                                            <button ng-repeat="s in eveningSlots"
+                                                class="slot-btn"
+                                                ng-class="{'slot-selected': bookForm.appointment_time===s.time, 'slot-taken': !s.available}"
+                                                ng-disabled="!s.available"
+                                                ng-click="selectSlot(s)">
+                                                {{formatSlotLabel(s.time)}}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Legend -->
+                                    <div style="display:flex;gap:12px;font-size:0.68rem;color:var(--text-muted);margin-bottom:0.75rem;flex-wrap:wrap;">
+                                        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:var(--teal);display:inline-block;"></span> Selected</span>
+                                        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#F1F5F9;border:1px solid #E2E8F0;display:inline-block;"></span> Booked</span>
+                                        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#fff;border:1.5px solid #CBD5E1;display:inline-block;"></span> Free</span>
+                                    </div>
+
+                                    <!-- Selected time badge -->
+                                    <div ng-if="bookForm.appointment_time"
+                                        style="background:rgba(0,180,216,0.1);border:1.5px solid var(--teal);border-radius:var(--radius);padding:0.7rem;text-align:center;margin-bottom:0.75rem;">
+                                        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <strong style="color:var(--teal);">{{formatSlotLabel(bookForm.appointment_time)}}</strong>
+                                        <span style="color:var(--text-muted);font-size:0.8rem;"> selected</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Prompt to pick a day if none selected yet -->
+                            <div ng-if="!selectedDay && !slotsLoading"
+                                style="text-align:center;padding:1rem 0;color:var(--text-muted);font-size:0.88rem;">
+                                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Tap a date above to see available slots
+                            </div>
+
+                            <!-- Confirm button -->
+                            <button class="btn btn-teal btn-lg btn-block" ng-click="bookAppointment()"
+                                ng-disabled="!bookForm.appointment_time || bookingLoading"
+                                style="margin-top:0.5rem;">
+                                <span ng-if="!bookingLoading"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Confirm Appointment</span>
+                                <span ng-if="bookingLoading">⏳ Booking...</span>
+                            </button>
+                            <button class="btn btn-ghost btn-sm btn-block" ng-click="resetBooking()"
+                                style="margin-top:6px;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- ==================== HISTORY ==================== -->
+            <div ng-if="activeSection === 'history'">
+                <div class="page-header">
+                    <h1><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> Appointment History</h1>
+                    <p>All your past and upcoming appointments</p>
+                </div>
+                <div class="card">
+                    <div class="card-body" ng-if="loading">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="empty-state" ng-if="!loading && appointments.length === 0">
+                        <div class="empty-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg></div>
+                        <h3>No appointments found</h3>
+                    </div>
+                    <div class="sort-bar"><label>Sort by</label><select class="form-control sort-select" ng-model="apptSortMode" ng-init="apptSortMode = 'smart'"><option value="smart">Upcoming first</option><option value="dateAsc">Date · earliest first</option><option value="dateDesc">Date · latest first</option><option value="name">Doctor name A–Z</option></select></div>
+                    <div class="table-wrapper" ng-if="!loading && appointments.length > 0">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Status</th>
+                                    <th>Diagnosis</th>
+                                    <th>Prescription</th>
+                                    <th>Cost</th>
+                                    <th>Payment</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="a in appointments | apptSort:apptSortMode:'doctor_name'">
+                                    <td>
+                                        <div class="td-name">{{a.doctor_name}}</div>
+                                        <div class="td-sub">{{a.specialization}}</div>
+                                    </td>
+                                    <td>{{a.appointment_date | date:'mediumDate'}}</td>
+                                    <td>{{a.appointment_time ? formatTime(a.appointment_time) : '—'}}</td>
+                                    <td><span class="badge"
+                                            ng-class="'badge-'+a.status.toLowerCase()">{{a.status}}</span></td>
+                                    <td>{{a.diagnosis || '—'}}<div class="td-sub" ng-if="a.treatment_notes">{{a.treatment_notes}}</div></td>
+                                    <td class="td-prescription">{{a.prescription || '—'}}</td>
+                                    <td>{{a.treatment_cost ? ('₹' + a.treatment_cost) : '—'}}</td>
+                                    <td>
+                                        <span class="badge"
+                                            ng-class="'badge-'+(a.payment_status||'unpaid').toLowerCase()"
+                                            ng-if="a.payment_status">{{a.payment_status}}</span>
+                                        <span ng-if="!a.payment_status">—</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-teal btn-sm" ng-if="a.status === 'Completed'" ng-click="openUploadForAppointment(a.appointment_id)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Report</button>
+                                        <span ng-if="a.status !== 'Completed'" style="color:var(--text-muted);font-size:0.8rem;">—</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== REPORTS ==================== -->
+            <div ng-if="activeSection === 'reports'">
+                <div class="page-header">
+                    <h1><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> My Reports</h1>
+                    <p>Medical reports uploaded by your doctors or yourself</p>
+                </div>
+
+                <!-- Upload Report Card -->
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <h3><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload New Report</h3>
+                        <button class="btn btn-ghost btn-sm" ng-click="showUploadPanel=!showUploadPanel">{{showUploadPanel ? 'Hide' : 'Upload File'}}</button>
+                    </div>
+                    <div class="card-body" ng-if="showUploadPanel">
+                        <form ng-submit="uploadPatientReport()">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Report Title <span class="required">*</span></label>
+                                    <input class="form-control" ng-model="uploadForm.report_type" placeholder="Blood Test, X-Ray, etc." required />
+                                </div>
+                                <div class="form-group">
+                                    <label>Doctor / Checkup <span class="required">*</span></label>
+                                    <select class="form-control" ng-model="uploadForm.appointment_id" required>
+                                        <option value="">Select Completed Checkup</option>
+                                        <option ng-repeat="a in appointments" ng-if="a.status === 'Completed'" value="{{a.appointment_id}}">{{a.doctor_name}} - {{a.appointment_date | date:'shortDate'}}</option>
+                                        <option value="other">Other (External Doctor)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" ng-if="uploadForm.appointment_id === 'other'">
+                                    <label>External Doctor Name <span class="required">*</span></label>
+                                    <input type="text" class="form-control" ng-model="uploadForm.external_doctor_name" placeholder="E.g. Dr. John Smith" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Upload File (PDF/Image) <span class="required">*</span></label>
+                                <div class="file-upload-wrapper">
+                                    <div class="file-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+                                    <p ng-if="!reportFile">Tap to capture or select file</p>
+                                    <p ng-if="reportFile" style="color:var(--green);font-weight:600;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> {{reportFile.name}}</p>
+                                    <!-- Use accept filter for strict MIME support and capture tag to bias Mobile Camera usage -->
+                                    <input type="file" accept="image/*,application/pdf" capture="environment" onchange="angular.element(this).scope().handleReportFile(this)" required />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-teal" ng-disabled="uploadLoading">
+                                <span ng-if="!uploadLoading"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload Report</span>
+                                <span ng-if="uploadLoading">Uploading...</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body" ng-if="loading">
+                        <div class="spinner"></div>
+                    </div>
+                    <div class="empty-state" ng-if="!loading && reports.length === 0">
+                        <div class="empty-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                        <h3>No reports yet</h3>
+                    </div>
+                    <div class="table-wrapper" ng-if="!loading && reports.length > 0">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Report Type</th>
+                                    <th>Doctor</th>
+                                    <th>Appointment Date</th>
+                                    <th>Uploaded</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="r in reports">
+                                    <td class="td-name">{{r.report_type}}<div class="td-sub" ng-if="r.uploaded_by === 'doctor'">Uploaded by your doctor</div><div class="td-sub" ng-if="r.uploaded_by === 'patient'">Uploaded by you</div></td>
+                                    <td>{{r.doctor_name || r.external_doctor_name || '—'}}</td>
+                                    <td>{{r.appointment_date | date:'mediumDate'}}</td>
+                                    <td>{{r.upload_date | date:'mediumDate'}}</td>
+                                    <td><button class="btn btn-teal btn-sm" ng-click="downloadReport(r.file_path)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                            Download</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== PROFILE ==================== -->
+
+            <!-- ============ NOTIFICATIONS ============ -->
+            <div ng-if="activeSection === 'notifications'">
+                <div class="page-header">
+                    <h1><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Notifications</h1>
+                    <p>Your latest updates</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Notifications ({{notifications.length}})<span class="notif-badge inline" ng-if="notifUnread > 0">{{notifUnread}} new</span></h3>
+                        <button class="btn btn-ghost btn-sm" ng-click="markAllNotifsRead()" ng-if="notifUnread > 0">Mark all read</button>
+                    </div>
+                    <div class="notif-list">
+                        <div class="notif-item" ng-repeat="n in notifications" ng-class="{unread: !n.is_read}" ng-click="markNotifRead(n)">
+                            <span class="notif-dot" ng-if="!n.is_read"></span>
+                            <div class="notif-body">
+                                <div class="notif-title">{{n.title}}</div>
+                                <div class="notif-msg">{{n.message}}</div>
+                                <div class="notif-time">{{n.created_at | date:'dd MMM yyyy, h:mm a'}}</div>
+                                <div class="notif-actions" ng-if="n.type === 'access_request' && !n.action_done">
+                                    <button class="btn btn-teal btn-sm" ng-click="respondAccess(n, true); $event.stopPropagation();">Approve</button>
+                                    <button class="btn btn-ghost btn-sm" ng-click="respondAccess(n, false); $event.stopPropagation();">Deny</button>
+                                </div>
+                                <div class="td-sub" ng-if="n.type === 'access_request' && n.action_done">You answered this request.</div>
+                            </div>
+                        </div>
+                        <p class="notif-empty" ng-if="!notifications.length">No notifications yet — new bookings, status changes and report uploads will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-if="activeSection === 'profile'">
+                <div class="page-header">
+                    <h1><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> My Profile</h1>
+                    <p><span ng-if="profile.profile_complete"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span> {{ profile.profile_complete ? 'Your profile is complete' : 'Complete your profile to unlock all
+                        features' }}</p>
+                </div>
+
+                <!-- Completion Progress -->
+                <div class="card mb-2" ng-if="!profile.profile_complete">
+                    <div class="card-body">
+                        <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;">
+                            <span style="font-size:1.5rem;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                            <div>
+                                <div style="font-weight:700;color:var(--text);">Profile Completion Required</div>
+                                <div style="font-size:0.8rem;color:var(--text-muted);">Fill in the details below to book
+                                    appointments</div>
+                            </div>
+                        </div>
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill" ng-style="{'width': profileProgress + '%'}"></div>
+                        </div>
+                        <div class="progress-label">
+                            <span>Completion</span><span>{{profileProgress}}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Info -->
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <h3><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Personal Information</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div>
+                                <div class="td-sub"
+                                    style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                    Full Name</div>
+                                <div style="font-weight:600;color:var(--text);margin-top:4px;">{{profile.name}}</div>
+                            </div>
+                            <div>
+                                <div class="td-sub"
+                                    style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                    Email</div>
+                                <div style="font-weight:600;color:var(--text);margin-top:4px;">{{profile.email}}</div>
+                            </div>
+                            <div>
+                                <div class="td-sub"
+                                    style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                    Phone</div>
+                                <div style="font-weight:600;color:var(--text);margin-top:4px;" ng-if="!phoneEdit.open">{{profile.phone}} <button type="button" class="btn btn-ghost btn-sm" ng-click="startPhoneEdit()" style="margin-left:6px;">Change</button></div>
+                                <form ng-if="phoneEdit.open" ng-submit="savePhone()" style="margin-top:4px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                                    <input type="tel" class="form-control" ng-model="phoneEdit.value" placeholder="10-digit mobile number" style="max-width:190px;" required />
+                                    <button type="submit" class="btn btn-teal btn-sm" ng-disabled="phoneEdit.saving">Save</button>
+                                    <button type="button" class="btn btn-ghost btn-sm" ng-click="cancelPhoneEdit()">Cancel</button>
+                                </form>
+                            </div>
+                            <div>
+                                <div class="td-sub"
+                                    style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                    Member Since</div>
+                                <div style="font-weight:600;color:var(--text);margin-top:4px;">
+                                    {{profile.registration_date | date:'mediumDate'}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Change Password -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Change Password</h3>
+                    </div>
+                    <div class="card-body">
+                        <form ng-submit="changePassword()">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Current Password <span class="required">*</span></label>
+                                    <input type="password" class="form-control" ng-model="pwdForm.current" placeholder="Your current password" required />
+                                </div>
+                                <div class="form-group">
+                                    <label>New Password <span class="required">*</span></label>
+                                    <input type="password" class="form-control" ng-model="pwdForm.next" placeholder="At least 8 characters, with a letter and a number" required />
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirm New Password <span class="required">*</span></label>
+                                    <input type="password" class="form-control" ng-model="pwdForm.confirm" placeholder="Repeat the new password" required />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-teal" ng-disabled="pwdForm.saving">Change Password</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Complete Profile Form -->
+                <div class="card" ng-if="!profile.profile_complete">
+                    <div class="card-header">
+                        <h3><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> Complete Your Profile</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="error-box" ng-if="profileError"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> {{profileError}}</div>
+                        <form ng-submit="completeProfile()">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Date of Birth <span class="required">*</span></label>
+                                    <input type="date" class="form-control" ng-model="completeForm.dobDate"
+                                        ng-change="updateAgeFromDob()" max="{{maxDob}}" required />
+                                </div>
+                                <div class="form-group">
+                                    <label>Age (auto-calculated)</label>
+                                    <input type="number" class="form-control" ng-model="completeForm.age"
+                                        placeholder="Fills in from your date of birth" readonly />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Gender <span class="required">*</span></label>
+                                <select class="form-control" ng-model="completeForm.gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Address <span class="required">*</span></label>
+                                <textarea class="form-control" ng-model="completeForm.address"
+                                    placeholder="Your full address..." rows="2" required></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>ID Type <span class="required">*</span></label>
+                                    <select class="form-control" ng-model="completeForm.id_type" required>
+                                        <option value="">Select ID Type</option>
+                                        <option value="Aadhar">Aadhar Card</option>
+                                        <option value="Passport">Passport</option>
+                                        <option value="Voter ID">Voter ID</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>ID Number <span class="required">*</span></label>
+                                    <input type="text" class="form-control" ng-model="completeForm.id_number"
+                                        placeholder="XXXX XXXX XXXX" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Upload ID Proof (JPG/PNG/PDF)</label>
+                                <div class="file-upload-wrapper">
+                                    <div class="file-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                                    <p ng-if="!idFile">Click to upload your ID document</p>
+                                    <p ng-if="idFile" style="color:var(--green);font-weight:600;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> {{idFile.name}}</p>
+                                    <input type="file" accept=".jpg,.jpeg,.png,.pdf"
+                                        onchange="angular.element(this).scope().handleFile(this)" />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-teal btn-lg" ng-disabled="profileLoading">
+                                <span ng-if="!profileLoading"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Save & Complete Profile</span>
+                                <span ng-if="profileLoading">Saving...</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Completed Profile Display -->
+                <div class="card" ng-if="profile.profile_complete">
+                    <div class="card-header">
+                        <h3><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Profile Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row">
+                            <div>
+                                <div class="td-sub"
+                                    style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                    Date of Birth</div>
+                                <div style="color:var(--text);margin-top:4px;">{{profile.dob ? (profile.dob | date:'dd MMM yyyy') : '—'}}</div>
+                            </div>
+                            <div>
+                                <div class="td-sub"
+                                    style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                    Age</div>
+                                <div style="color:var(--text);margin-top:4px;">{{profile.age}} years</div>
+                            </div>
+                            <div>
+                                <div class="td-sub"
+                                    style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                    Gender</div>
+                                <div style="color:var(--text);margin-top:4px;">{{profile.gender}}</div>
+                            </div>
+                            <div>
+                                <div class="td-sub"
+                                    style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                    ID Type</div>
+                                <div style="color:var(--text);margin-top:4px;">{{profile.id_type}}</div>
+                            </div>
+                            <div>
+                                <div class="td-sub"
+                                    style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                    ID Number</div>
+                                <div style="color:var(--text);margin-top:4px;">{{profile.id_number}}</div>
+                            </div>
+                        </div>
+                        <div style="margin-top:1rem;">
+                            <div class="td-sub"
+                                style="text-transform:uppercase;letter-spacing:0.8px;font-size:0.7rem;font-weight:600;">
+                                Address</div>
+                            <div style="color:var(--text);margin-top:4px;">{{profile.address}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL: Profile Incomplete (shown when trying to book without completing profile) -->
+    <div class="modal-overlay" ng-if="showProfileModal">
+        <div class="modal-box">
+            <div class="modal-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <h2>Complete Your Profile First</h2>
+            <p>To book an appointment, please fill in your remaining profile details including date of birth, gender, address, and
+                ID proof.</p>
+            <div class="modal-actions">
+                <button class="btn btn-teal btn-lg" ng-click="goToProfileFromModal()"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> Fill Now</button>
+                <button class="btn btn-ghost btn-lg" ng-click="showProfileModal=false">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Booking Success — Arrive 30 mins early -->
+    <div class="modal-overlay" ng-if="showBookingSuccess" ng-click="closeBookingModal(false)">
+        <div class="modal-box" style="text-align:center;max-width:420px;" ng-click="$event.stopPropagation()">
+            <div class="modal-icon" style="font-size:3rem;margin-bottom:0.5rem;"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+            <h2 style="color:var(--teal);margin-bottom:0.5rem;">Appointment Confirmed!</h2>
+            <p style="color:var(--text-muted);font-size:0.95rem;">Your appointment has been successfully booked.</p>
+            <div style="background:rgba(0,180,216,0.1);border:1.5px solid var(--teal);border-radius:var(--radius);padding:1rem;margin:1.25rem 0;">
+                <div style="font-size:1.6rem;margin-bottom:6px;">⏰</div>
+                <div style="font-weight:700;color:var(--text);font-size:1rem;">Please arrive at the clinic/hospital</div>
+                <div style="font-weight:800;color:var(--teal);font-size:1.2rem;">30 minutes before</div>
+                <div style="color:var(--text-muted);font-size:0.88rem;margin-top:4px;">your scheduled appointment time</div>
+            </div>
+            <div ng-if="lastBookedTime" style="font-size:0.9rem;color:var(--text-muted);margin-bottom:1rem;">
+                <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Your slot: <strong style="color:var(--text);">{{lastBookedTime}}</strong>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-teal btn-lg" ng-click="closeBookingModal(true)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg> View Appointments</button>
+                <button class="btn btn-ghost btn-lg" ng-click="closeBookingModal(false)"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> Close</button>
+            </div>
+        </div>
+    </div>
+
+</div>

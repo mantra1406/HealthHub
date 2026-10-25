@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="HealthHub logo (mono)">
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="#0F3449"/>
+  <path d="M27 11h10v9h9v10h-9v9H27v-9h-9V20h9z" fill="#ffffff"/>
+  <polyline points="13,47 24,47 28,40.5 33,53 37,47 51,47" fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
